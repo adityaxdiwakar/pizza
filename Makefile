@@ -19,7 +19,7 @@ run: ## run the container with default parameters
 up: build run ## build the container and boot
 
 image:
-	docker tag pizza docker.pkg.github.com/adityaxdiwakar/pizza/pizza:latest
+	docker tag pizza docker.pkg.github.com/gt-esports/pizza/pizza:latest
 	
 push-image:
-	docker push docker.pkg.github.com/adityaxdiwakar/pizza/pizza:latest
+	docker push docker.pkg.github.com/gt-esports/pizza/pizza:latest

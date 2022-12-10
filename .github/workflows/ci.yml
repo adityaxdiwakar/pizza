@@ -28,7 +28,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/adityaxdiwakar/pizza/pizza:latest
+          tags: ghcr.io/gt-esports/pizza/pizza:latest
       - name: Execute Deploy Script
         uses: appleboy/ssh-action@master
         with:
