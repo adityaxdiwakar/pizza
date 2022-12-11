@@ -22,6 +22,9 @@ func init() {
 
 	if conf.DiscordConfig.Env == "dev" {
 		db = testConnection{}
+	} else if conf.DiscordConfig.Env == "prod" {
+		// TODO: replace with proper dependency injection
+		db = testConnection{}
 	}
 }
 
