@@ -7,17 +7,21 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/bwmarrin/discordgo"
 )
 
 var conf tomlConfig
+var db database
 
 func init() {
 	if _, err := toml.DecodeFile("config/config.toml", &conf); err != nil {
 		log.Fatalf("error: could not parse configuration :%v\n", err)
+	}
+
+	if conf.DiscordConfig.Env == "dev" {
+		db = testConnection{}
 	}
 }
 
@@ -51,27 +55,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	m.Content = m.Content[len(conf.DiscordConfig.Prefix):]
 	mSplit := strings.Split(m.Content, " ")
 
-	switch {
+	// command selector
+	switch mSplit[0] {
 
-	case mSplit[0] == "ping":
+	case "ping":
 		ping(s, m)
 
+	case "userinfo":
+		getUserInfo(s, m)
 	}
-}
-
-func ping(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// Collect current timestamp for comparision
-	now := time.Now()
-
-	// Send the message to Discord
-	msg, _ := s.ChannelMessageSend(m.ChannelID, "Pong!")
-
-	// Calculate the timestamp from the snowflake
-	timestamp, _ := discordgo.SnowflakeTimestamp(msg.ID)
-
-	// Find the difference in the API timestamp and local timestamp
-	diff := int32(timestamp.Sub(now).Seconds() * 1000)
-
-	// Send the ping message into the respective channel
-	msg, _ = s.ChannelMessageEdit(msg.ChannelID, msg.ID, fmt.Sprintf(":ping_pong: WS Roundtrip: %dms!", diff))
 }
